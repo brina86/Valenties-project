@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To: Arshad 💌</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Dancing+Script:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body{
+      margin: 0;
+      height: 100vh;
+      font-family: "Poppins", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #5b0b1c, #2b0610);
+      color: #fff;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* -------------------- Floating heart bubbles -------------------- */
+    .heart{
+      position: absolute;
+      background: rgba(255, 195, 215, 0.65);
+      transform: rotate(45deg);
+      border-radius: 2px;
+      opacity: 0;
+      animation: floatUp linear infinite;
+      filter: blur(0.2px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .heart::before,
+    .heart::after{
+      content: "";
+      position: absolute;
+      background: rgba(255, 195, 215, 0.65);
+      border-radius: 50%;
+    }
+
+    @keyframes floatUp{
+      0% { transform: translateY(30px) rotate(45deg); opacity: 0; }
+      15% { opacity: 0.55; }
+      100% { transform: translateY(-120vh) rotate(45deg); opacity: 0; }
+    }
+
+    /* -------------------- Polaroids -------------------- */
+    .polaroidGroup{
+      position: absolute;
+      inset: 0;
+      z-index: 2; /* behind the card */
+      pointer-events: none;
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .polaroidGroup.fadeOut{
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+   .polaroid {
+  position: absolute;
+  width: 200px; /* Increased from 160px */
+  background: rgba(255,255,255,0.92);
+  border-radius: 16px;
+  padding: 12px 12px 20px; /* Slightly more padding for the larger size */
+  box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+  transform: rotate(var(--rot));
+  animation: floatPolaroid 6s ease-in-out infinite;
+  opacity: 0.95;
+}
+
+.polaroid img {
+  width: 100%;
+  height: 200px; /* Match the width for a square look */
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+    .polaroid .cap{
+      margin-top: 8px;
+      font-family: "Caveat", cursive;
+      font-size: 20px;
+      color: #5b0b1c;
+      text-align: center;
+      opacity: 0.9;
+    }
+
+    @keyframes floatPolaroid{
+      0%,100% { transform: translateY(0px) rotate(var(--rot)); }
+      50% { transform: translateY(-10px) rotate(var(--rot)); }
+    }
+
+    /* Positions: 2 left, 2 right */
+    .p1{ left: 20px; top: 120px; --rot: -8deg; }
+    .p2{ left: 40px; bottom: 110px; --rot: 6deg; }
+    .p3{ right: 30px; top: 130px; --rot: 8deg; }
+    .p4{ right: 50px; bottom: 120px; --rot: -6deg; }
+
+    /* -------------------- Main Card -------------------- */
+    .card{
+      width: 100%;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+      position: relative;
+      z-index: 10;
+    }
+
+    /* -------------------- Envelope Screen -------------------- */
+    .envelopeWrap{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hint{
+      opacity: 0.9;
+      font-size: 14px;
+      text-align: center;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .envelope{
+      width: 320px;
+      height: 210px;
+      background: rgba(255, 240, 245, 0.92);
+      border-radius: 18px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.35);
+      overflow: hidden;
+    }
+
+    .envelope:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+    }
+
+    .envelope:active{
+      transform: translateY(0px) scale(0.98);
+    }
+
+    .flap{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 225, 235, 0.95);
+      clip-path: polygon(0 0, 100% 0, 50% 55%);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .foldLeft{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50%;
+      height: 60%;
+      background: rgba(255, 215, 230, 0.65);
+      clip-path: polygon(0 100%, 0 0, 100% 100%);
+    }
+
+    .foldRight{
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 50%;
+      height: 60%;
+      background: rgba(255, 215, 230, 0.65);
+      clip-path: polygon(100% 100%, 0 100%, 100% 0);
+    }
+
+    .toText{
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      font-family: "Dancing Script", cursive;
+      font-size: 24px;
+      color: rgba(91, 11, 28, 0.9);
+      z-index: 5;
+    }
+
+    /* -------------------- Letter Screen -------------------- */
+    .letter{
+      background: rgba(255, 248, 252, 0.95);
+      color: #2a0a12;
+      border-radius: 22px;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,0.45);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+    }
+
+    .sceneTitle{
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(91, 11, 28, 0.7);
+      margin-bottom: 10px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    /* Handwritten scenes */
+    .sceneText{
+      font-family: "Caveat", cursive;
+      font-size: 28px;
+      line-height: 1.35;
+      margin: 0;
+      color: #2a0a12;
+      letter-spacing: 0.2px;
+      white-space: pre-line;
+    }
+
+    .actions{
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn{
+      border: none;
+      border-radius: 16px;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      min-width: 140px;
+      user-select: none;
+    }
+
+    .btn:active{
+      transform: scale(0.96);
+    }
+
+    .btnPrimary{
+      background: linear-gradient(135deg, #ff4d6d, #ff2f92);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(255, 77, 109, 0.35);
+    }
+
+    .btnPrimary:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px rgba(255, 77, 109, 0.45);
+    }
+
+    .btnGhost{
+      background: rgba(0, 0, 0, 0.08);
+      color: #2a0a12;
+    }
+
+    /* Valentine question */
+    .questionTitle{
+      font-family: "Caveat", cursive;
+      font-size: 40px;
+      font-weight: 600;
+      margin: 0 0 10px;
+      text-align: center;
+      color: #2a0a12;
+    }
+
+    .messageBox{
+      margin-top: 14px;
+      padding: 18px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      min-height: 70px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+      font-weight: 600;
+      line-height: 1.4;
+      gap: 6px;
+
+      font-family: "Caveat", cursive;
+      font-size: 26px;
+      color: #2a0a12;
+    }
+
+    .success{
+      border: 1px solid rgba(46, 204, 113, 0.25);
+      background: rgba(46, 204, 113, 0.10);
+    }
+
+    .error{
+      border: 1px solid rgba(231, 76, 60, 0.25);
+      background: rgba(231, 76, 60, 0.10);
+    }
+
+    .hidden{ display: none; }
+
+    /* Final reveal polaroid */
+    .finalPolaroid{
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    .finalFrame{
+      width: 240px;
+      background: rgba(255,255,255,0.95);
+      padding: 12px 12px 22px;
+      border-radius: 18px;
+      box-shadow: 0 22px 70px rgba(0,0,0,0.55);
+      transform: scale(0.8);
+      opacity: 0;
+      animation: popIn 0.55s ease forwards;
+    }
+
+    .finalFrame img{
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+    }
+
+    .finalCap{
+      margin-top: 10px;
+      text-align: center;
+      font-family: "Caveat", cursive;
+      font-size: 30px;
+      color: #5b0b1c;
+    }
+
+    @keyframes popIn{
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 750px){
+      .polaroid{ width: 200px; }
+      .polaroid img{ height: 120px; }
+      .p1{ left: 10px; top: 110px; }
+      .p2{ left: 18px; bottom: 110px; }
+      .p3{ right: 12px; top: 120px; }
+      .p4{ right: 18px; bottom: 110px; }
+    }
+
+    @media (max-width: 420px){
+      .envelope{ width: 280px; height: 190px; }
+      .toText{ font-size: 22px; }
+      .sceneText{ font-size: 24px; }
+      .questionTitle{ font-size: 34px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Floating hearts generator -->
+  <script>
+    function spawnHearts() {
+      const heartCount = 26; // medium
+      for (let i = 0; i < heartCount; i++) {
+        const h = document.createElement("div");
+        h.className = "heart";
+
+        const size = 6 + Math.random() * 14;
+        h.style.width = size + "px";
+        h.style.height = size + "px";
+
+        // pseudo element sizing
+        const alpha = 0.35 + Math.random() * 0.35;
+        h.style.background = `rgba(255, 195, 215, ${alpha})`;
+
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.animationDuration = (6 + Math.random() * 7) + "s";
+        h.style.animationDelay = (Math.random() * 4) + "s";
+
+        // build pseudo sizes using inline style tag
+        const style = document.createElement("style");
+        style.innerHTML = `
+          .heart::before, .heart::after{
+            width:${size}px;
+            height:${size}px;
+            background: rgba(255, 195, 215, ${alpha});
+          }
+          .heart::before{ top:-${size/2}px; left:0; }
+          .heart::after{ left:-${size/2}px; top:0; }
+        `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(h);
+      }
+    }
+    spawnHearts();
+  </script>
+
+  <!-- Polaroids (2 left, 2 right) -->
+  <div class="polaroidGroup" id="polaroidGroup">
+  <div class="polaroid p1">
+    <img src="photo2.JPG" alt="us photo 2">
+    <div class="cap">my fav </div>
+  </div>
+
+  <div class="polaroid p2">
+    <img src="photo3.JPG" alt="us photo 3">
+    <div class="cap">love you ;)</div>
+  </div>
+
+  <div class="polaroid p3">
+    <img src="photo_4.JPG" alt="us photo 4">
+    <div class="cap">Usss 🥰 </div>
+  </div>
+
+  <div class="polaroid p4">
+    <img src="photo5.JPG" alt="us photo 5">
+    <div class="cap">forever</div>
+  </div>
+</div>
+
+  <div class="card">
+
+    <!-- SCREEN 1: Envelope -->
+    <div id="screenEnvelope" class="envelopeWrap">
+      <div class="envelope" id="envelopeBtn">
+        <div class="toText">to: Arshad</div>
+        <div class="flap"></div>
+        <div class="foldLeft"></div>
+        <div class="foldRight"></div>
+      </div>
+      <div class="hint">Tap the envelope 💌</div>
+    </div>
+
+    <!-- SCREEN 2: Letter Scenes -->
+    <div id="screenLetter" class="letter hidden">
+      <div class="sceneTitle" id="sceneTitle">Scene 1</div>
+      <p class="sceneText" id="sceneText"></p>
+
+      <div class="actions">
+        <button class="btn btnPrimary" id="nextBtn">Next ➜</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: Valentine Question -->
+    <div id="screenQuestion" class="letter hidden">
+      <h2 class="questionTitle">will you be my valentines? 🥰 </h2>
+
+      <div class="actions">
+        <button class="btn btnPrimary" id="yesBtn">Yes 💖</button>
+        <button class="btn btnGhost" id="noBtn">No </button>
+      </div>
+
+      <div id="finalMessage" class="messageBox">
+        please say yes 🥺 
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Scenes content
+    const scenes = [
+`Hey, my love... honestly, I’d have found a better way to do this (like standing outside your house with a bouquet of flowers 😉)
+if I could, but unfortunately i cant so this is my current best.
+its the thought that counts, right?
+This is my first time trying something like this, so please bear with the bugs and mistakes.`,
+
+`It’s been 4 years since we started talking.
+Now, you’re my best friend, my comfort zone, my "unpaid therapist" who listens to all my rants, and someone I'm proud to call my boyfriend.
+I can confidently say that asking you out was the best decision I’ve ever made.`,
+
+`After us meeting i think ive fallen for you all over again and I can't imagine a future without you at this point.
+thank you for being there for me all this time baby, i love you wayyyyy more than you think i do.
+oh almost forgot to ask you the most important thing`
+    ];
+
+    const screenEnvelope = document.getElementById("screenEnvelope");
+    const screenLetter = document.getElementById("screenLetter");
+    const screenQuestion = document.getElementById("screenQuestion");
+
+    const envelopeBtn = document.getElementById("envelopeBtn");
+    const sceneTitle = document.getElementById("sceneTitle");
+    const sceneText = document.getElementById("sceneText");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const finalMessage = document.getElementById("finalMessage");
+
+    let currentScene = 0;
+
+    function showScene(index) {
+      sceneTitle.innerText = `Scene ${index + 1}`;
+      sceneText.innerText = scenes[index];
+    }
+
+    envelopeBtn.addEventListener("click", () => {
+      screenEnvelope.classList.add("hidden");
+      screenLetter.classList.remove("hidden");
+      showScene(currentScene);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      currentScene++;
+
+      if (currentScene < scenes.length) {
+        showScene(currentScene);
+      } else {
+        screenLetter.classList.add("hidden");
+        screenQuestion.classList.remove("hidden");
+      }
+    });
+
+    yesBtn.addEventListener("click", () => {
+
+confetti({
+    particleCount: 150, // Number of pieces
+    spread: 70,        // How wide they fly
+    origin: { y: 0.6 }, // Height (0.6 is slightly below middle)
+    colors: ['#ff4d6d', '#ff2f92', '#ffffff'] // Romantic pinks and whites
+  });
+      finalMessage.classList.remove("error");
+      finalMessage.classList.add("success");
+
+      finalMessage.innerHTML = `
+        <div>YIPPEEEEEE you made the right choice baby 🥰 </div>
+        <div>see you at <b>10pm</b> friday night <b>13th feb</b> 😘</div>
+      `;
+
+      // Fade out side polaroids
+      const polaroidGroup = document.getElementById("polaroidGroup");
+      polaroidGroup.classList.add("fadeOut");
+
+      // Reveal final photo after fade
+      setTimeout(() => {
+        polaroidGroup.style.display = "none";
+        document.getElementById("finalPolaroid").classList.remove("hidden");
+      }, 750);
+    });
+
+    noBtn.addEventListener("click", () => {
+      finalMessage.classList.remove("success");
+      finalMessage.classList.add("error");
+      finalMessage.innerHTML = `
+        <div>oops wrong answer 😡</div>
+        <div>try again.</div>
+      `;
+    });
+  </script>
+
+</body>
+</html>
+
